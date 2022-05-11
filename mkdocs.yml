@@ -1,0 +1,11 @@
+docs_dir: ./docs
+site_name: InkyCloud文档
+nav:
+    - 主页: index.md
+    - 官方文档:
+        - WritingWithInk: officials/WritingWithInk.md
+    - 教程:
+        - 数组和字典: tutorials/array.md
+        - INK扩展语法: tutorials/syntax_ex.md
+theme: readthedocs
+repo_url: https://github.com/blueloveTH/inkycloud
