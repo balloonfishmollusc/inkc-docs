@@ -41,5 +41,7 @@ jobs:
         with:
           # Build directory to deploy
           build_dir: docs/.retype
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_PUBLIC_TOKEN }}
           
     
