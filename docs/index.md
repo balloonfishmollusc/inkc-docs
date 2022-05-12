@@ -1,5 +1,5 @@
-# InkyCloud文档
+# cInk文档
 
-这里是InkyCloud的文档。
+这里是cInk的文档。
 
 请点击左上角查看目录。
