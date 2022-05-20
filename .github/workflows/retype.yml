@@ -39,7 +39,7 @@ jobs:
         with:
           registry: registry.cn-hongkong.aliyuncs.com
           username: blueloveth
-          password: ${{ secrets.ORG_ACR_PASSWORD }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       -
         name: Build and Push Docker Image
         run: |
