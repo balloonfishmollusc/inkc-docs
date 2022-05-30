@@ -1,0 +1,12 @@
+:80 {
+    encode gzip {
+        match {
+            header Content-Type text/*
+            header Content-Type application/*
+            header Content-Type font/*
+        }
+    }
+
+    root * /usr/share/caddy
+    file_server
+}
