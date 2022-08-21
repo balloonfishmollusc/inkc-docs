@@ -1,4 +1,4 @@
-# cInk文档
+# Inkc文档
 
 https://docs.inkpad.dev
 
