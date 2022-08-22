@@ -22,7 +22,7 @@ INCLUDE tabletop.ink
 // 在图层1画图
 
 == function _on_tap(i)
-// chu'l
+// 处理格子点击事件
 
 ```
 
