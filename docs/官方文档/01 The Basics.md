@@ -25,15 +25,48 @@ By default, all text in your file will appear in the output content, unless spec
 
 The simplest mark-up is a comment. **ink** supports two kinds of comment. There's the kind used for someone reading the code, which the compiler ignores:
 
-	"What do you make of this?" she asked.
-	
-	// Something unprintable...
-	
-	"I couldn't possibly comment," I replied.
-	
-	/*
-		... or an unlimited block of text
-	*/
+> 默认情况下，除非特别标记，否则文件中的所有文本都将显示在输出内容中。
+>
+> 最简单的标记是注释。 **ink** 支持两种注释。有一种是用于某人阅读代码的人，编译器会忽略它：
+
+```
+有两种方式添加注释：
+1.这种只能作用于这一行
+//注释
+
+2.这种类似于括号，将/*....*/内的内容都变成注释
+/*
+注释
+注释
+注释
+*/
+
+下面是一个例子：
+在编辑代码时，你将看到以下内容
+
+"What do you make of this?" she asked.
+
+// Something unprintable...
+
+"I couldn't possibly comment," I replied.
+
+/*
+	... or an unlimited block of text
+*/
+
+当游戏运行时，注释消杀，它将显示为这个：
+"What do you make of this?" she asked.
+
+
+"I couldn't possibly comment," I replied.
+
+
+
+
+
+
+
+```
 
 and there's the kind used for reminding the author what they need to do, that the compiler prints out during compilation:
 
@@ -46,6 +79,7 @@ Text content from the game will appear 'as is' when the engine runs. However, it
 
 **ink** provides a simple system for tagging lines of content, with hashtags.
 
+	意思就是，你在写代码的时候，编译器会将一些字标成不同颜色便于阅读，当然，游戏运行的时候是不会将这些子的颜色改变的
 	A line of normal game-text. # colour it blue
 
 These don't show up in the main text flow, but can be read off by the game and used as you see fit. See [Running Your Ink](RunningYourInk.md#marking-up-your-ink-content-with-tags) for more information.
@@ -57,24 +91,38 @@ Input is offered to the player via text choices. A text choice is indicated by a
 
 If no other flow instructions are given, once made, the choice will flow into the next line of text.
 
+> 输入通过文本选择提供给玩家。文本选择由 * 字符表示（但我个人推荐用+这个字符，后面会讲到）。
+>
+> 如果没有给出其他指令，一旦做出，选择将流入下一行文本。
+
 	Hello world!
 	*	Hello back!
 		Nice to hear from you!
+	选项下的代码将在玩家选择该选项后运行
 
 This produces the following game:
 
+> 以上代码将生成以下游戏界面：
+
 	Hello world
-	1: Hello back!
+	1: Hello back!    这里玩家界面会弹出一个可以点击的选项，就叫Hello back!
 	
-	> 1
-	Hello back!
+	 玩家点击了该选项，而后选项名字Hello back!接着出现在了下面，而后原本该选项内的代码运行，Nice to hear from you!接着弹出
+	 
+	>1 Hello back!
 	Nice to hear from you.
 
 By default, the text of a choice appears again, in the output.
 
+> 默认情况下，所选内容的文本将再次显示在输出中。
+
 ### Suppressing choice text
 
 Some games separate the text of a choice from its outcome. In **ink**, if the choice text is given in square brackets, the text of the choice will not be printed into response.
+
+> **禁止显示选项文本**
+>
+> 一些游戏将选择的文本与其结果分开。 如果在方括号中给出选择文本，则所选文本将不会出现在游戏界面中。
 
 	Hello world!
 	*	[Hello back!]
@@ -85,12 +133,17 @@ produces
 	Hello world
 	1: Hello back!
 	
-	> 1
-	Nice to hear from you.
+	玩家点击了该选项，但由于代码中Hello back!被加上了方括号，将不会出现在游戏界面中。
+	
+	>1 Nice to hear from you.
 
 #### Advanced: mixing choice and output text
 
 The square brackets in fact divide up the option content. What's before is printed in both choice and output; what's inside only in choice; and what's after, only in output. Effectively, they provide alternative ways for a line to end.
+
+> **高级：混合选择和输出文本**
+>
+> 方括号实际上划分了选项内容。之前的内容在选择和输出中都打印出来;内在的东西只有在选择中;以及之后的内容，仅在输出中。实际上，它们为线路的结束提供了替代方法。（这里的意思是，方括号后的内容在选项跳出来时不会出现。）
 
 	Hello world!
 	*	Hello [back!] right back to you!
@@ -113,7 +166,7 @@ This is most useful when writing dialogue choices:
 produces:
 
 	"What's that?" my master asked.
-	1. "I am somewhat tired."
+	1: "I am somewhat tired."
 	> 1
 	"I am somewhat tired," I repeated.
 	"Really," he responded. "How deleterious."
@@ -121,6 +174,10 @@ produces:
 ### Multiple Choices
 
 To make choices really choices, we need to provide alternatives. We can do this simply by listing them:
+
+> **多种选择**
+>
+> 要使选择真正成为选择，我们需要提供替代方案。我们只需列出它们即可做到这一点：
 
 	"What's that?" my master asked.
 	*	"I am somewhat tired[."]," I repeated.
@@ -132,15 +189,27 @@ To make choices really choices, we need to provide alternatives. We can do this 
 
 This produces the following game:
 
-	"What's that?" my master asked.
-	
-	1: "I am somewhat tired."
-	2: "Nothing, Monsieur!"
-	3: "I said, this journey is appalling."
-	
-	> 3
-	"I said, this journey is appalling and I want no more of it."
-	"Ah," he replied, not unkindly. "I see you are feeling frustrated. Tomorrow, things will improve."
+> 选项包含的内容在下一个同级选项开始，或下一个节点开始时截止。
+> 上文代码中，我们可以看到有三个标有一个的选项，当玩家选择了	"I am somewhat tired[."]," I repeated.对应在下文游戏时显示在屏幕中的选项时，那么系统会运行该选项包含的内容，也就是显示"Really," he responded. "How deleterious."。而如果玩家选择了其他两个选项，那么系统运行的也是这两个选项下，一直到下个同级选项或节点的那一部分。（至于同级的概念，之后会讲到）
+
+```
+"What's that?" my master asked.
+
+1:"I am somewhat tired."
+2:"Nothing, Monsieur!"
+3:"I said, this journey is appalling."
+
+>1 "Really," he responded. "How deleterious."
+>2 "Very good, then."
+>3 "I said, this journey is appalling and I want no more of it."
+ "Ah," he replied, not unkindly. "I see you are feeling frustrated. Tomorrow, things will improve."
+```
+
+
+
+
+
+
 
 The above syntax is enough to write a single set of choices. In a real game, we'll want to move the flow from one point to another based on what the player chooses. To do that, we need to introduce a bit more structure.
 
@@ -156,11 +225,35 @@ These sections are called "knots" and they're the fundamental structural unit of
 
 The start of a knot is indicated by two or more equals signs, as follows.
 
+> **结**（其实我喜欢叫它节点）
+>
+> **内容片段称为结**
+>
+> 为了允许游戏分支，我们需要用名称标记内容部分
+>
+> 这些部分被称为“结”，它们是ink的基本结构单元。
+>
+> **写结**
+>
+> 结的开始由两个或多个等号表示，如下所示。
+
 	=== top_knot ===
 
 (The equals signs on the end are optional; and the name needs to be a single word with no spaces.)
 
 The start of a knot is a header; the content that follows will be inside that knot.
+
+> 末尾的等号是可选的
+>
+> （你可以选择不加，也就是=== top_knot）;
+>
+> 名称必须是没有空格的单个单词。
+>
+> 结的开头是标题;接下来的内容将在那个结内。
+>
+> （如下文例子，这里节点的开头指的就是  === back_in_london ===  ，其中back_in_london就是节点的名字，以后跳转到哪个节点依靠的就是它，而所谓接下来的内容，指的就是这个节点开头下面，直到另一个节点开头的部分。至于同级节点的概念，之后会讲）
+
+
 
 	=== back_in_london ===
 	
@@ -170,8 +263,19 @@ The start of a knot is a header; the content that follows will be inside that kn
 
 When you start an ink file, content outside of knots will be run automatically. But knots won't. So if you start using knots to hold your content, you'll need to tell the game where to go. We do this with a divert arrow `->`, which is covered properly in the next section.
 
+> 启动ink文件时，节外的内容将自动运行。但结不会。因此，如果您开始使用结来保存内容，则需要告诉游戏该去哪里。我们使用转移箭头 -> 来执行此操作，这将在下一节中正确介绍。.
+>
+> （所谓节点外的内容，指的就是不属于任何一个节点的内容，一般是指的从上往下数第一个节点之前的内容。）
+>
+> 
+
+
+
 The simplest knotty script is:
 
+	当系统运行到含有箭头的那一行时，系统会检索箭头后的内容，看看所有节点的名字有没有哪个和它相同，然后直接跳转到那个节点的 “开头位置”
+	（不过请注意，进入节点要箭头，出节点也是要用箭头跳转到自己或其他节点的，不然游戏就结束了。）
+	
 	-> top_knot
 	
 	=== top_knot ===
@@ -179,13 +283,25 @@ The simplest knotty script is:
 
 However, **ink** doesn't like loose ends, and produces a warning on compilation and/or run-time when it thinks this has happened. The script above produces this on compilation:
 
+> 但是， **ink** 不喜欢松散的结尾，当它认为这种情况已经发生时，它会在编译和/或运行时生成警告。上面的脚本在编译时生成以下内容：
+>
+> （也就算是说，当一个节点走完，你必须要使用箭头跳转出去，否则就会报错。而如果你想让游戏在运行完这个节点后直接结束，那么你可以在节点最后加上-> END直接跳转出游戏
+
+
+
+以下是节点运行到底而没有任何跳转时的报错：
+
 	WARNING: Apparent loose end exists where the flow runs out. Do you need a '-> END' statement, choice or divert? on line 3 of tests/test.ink
 
 and this on running:
 
 	Runtime error in tests/test.ink line 3: ran out of content. Do you need a '-> DONE' or '-> END'?
 
+
+
 The following plays and compiles without error:
+
+这是正确的做法，如此一来，当进入了这个节点后，屏幕上会显示Hello world!而如果玩家再点一下屏幕，游戏会直接结束，屏幕中央会弹出 “游戏结束” 的白色方框
 
 	=== top_knot ===
 	Hello world!
@@ -199,6 +315,16 @@ The following plays and compiles without error:
 
 You can tell the story to move from one knot to another using `->`, a "divert arrow". Diverts happen immediately without any user input.
 
+> **分流**
+>
+> **结转移到结**
+>
+> 你可以用 ->（一种“转移箭头”）讲述从一个结移动到另一个结的故事。无需任何用户输入即可立即进行分流。
+>
+> （在一个节点内使用箭头进行跳转，会跳转到另外一个节点，甚至也可以跳转到自己本身的节点开头位置）
+
+
+
 	=== back_in_london ===
 	
 	We arrived into London at 9.45pm exactly.
@@ -206,10 +332,16 @@ You can tell the story to move from one knot to another using `->`, a "divert ar
 	
 	=== hurry_home ===
 	We hurried home to Savile Row as fast as we could.
+	
+	当系统在节点back_in_london中运行时，它看到了-> hurry_home，于是系统便跳转到了节点 hurry_home的开头
 
 #### Diverts are invisible
 
 Diverts are intended to be seamless and can even happen mid-sentence:
+
+> **分流是看不见的**
+>
+> 转移旨在无缝衔接，甚至可能发生在句子中间：
 
 	=== hurry_home ===
 	We hurried home to Savile Row -> as_fast_as_we_could
@@ -224,6 +356,12 @@ produces the same line as above:
 #### Glue
 
 The default behaviour inserts line-breaks before every new line of content. In some cases, however, content must insist on not having a line-break, and it can do so using `<>`, or "glue".
+
+> 默认行为在每行新内容之前插入换行符。但是，在某些情况下，内容必须坚持没有换行符，并且可以使用<>或“胶水”来执行此操作。
+>
+> （意思就是，符号<>能够消除紧跟在之后的换行行为）
+>
+> （这还意味着，原本玩家需要点好几下才能逐条显示完整的文本，只要使用这个符号链接上下两行文本，那么玩家只要点一下就可以显示一串了）
 
 	=== hurry_home ===
 	We hurried home <>
@@ -248,6 +386,14 @@ You can't use too much glue: multiple glues next to each other have no additiona
 ### Basic branching
 
 Combining knots, options and diverts gives us the basic structure of a choose-your-own game.
+
+> **分支流程**
+>
+> **基本分支**
+>
+> 结合结，选项和转移为我们提供了选择自己的游戏的基本结构。
+>
+> （如下面这个例子，当玩家选择* [Open the gate]这个选项时，游戏会跳转到节点paragraph_2，因为选项* [Open the gate]的内容就是  -> paragraph_2  ，它会让游戏跳转到节点paragraph_2
 
 	=== paragraph_1 ===
 	You stand by the wall of Analand, sword in hand.
@@ -299,6 +445,31 @@ In most ink scripts, the story flow starts at the top, bounces around in a spagh
 
 The very loose structure means writers can get on and write, branching and rejoining without worrying about the structure that they're creating as they go. There's no boiler-plate to creating new branches or diversions, and no need to track any state.
 
+> **故事流程**
+>
+> 结和转移相结合，创造了游戏的基本故事流程。此流是“平坦的” - 没有调用堆栈，并且不会从中“返回”转移。
+>
+> 在大多数墨迹脚本中，故事流从顶部开始，在意大利面条般的混乱中反弹，最终，希望达到 ->结束。
+>
+> 非常松散的结构意味着作家可以继续写作，分支和重新加入，而不必担心他们正在创建的结构。没有用于创建新分支或转移的样板，也无需跟踪任何状态。
+>
+> （当然，还有一种叫做隧道的跳转方法，在两个箭头直接输入一个节点的名字   ->b->  ，那么系统运行到这里就会跳转到那个节点，若继续运行时找到中间没有东西的两个箭头时  -> ->  ，系统会回到最近一次使用隧道跳转的那一行继续走下去
+>
+> ```
+> ==a==
+> 老师：一加一等于多少？
+> ->b->
+> 老师：同学你答对了！
+> 
+> ==b==
+> 同学：等于二！
+> ->->
+> ```
+>
+> 这虽然是非常 常用且方便的一种工具，不过使用这种跳转时一定一定要理清自己的思路，不要跳转出去了就以为没事了，特别是当你连续用隧道跳转了多次之后，因为这种跳转最终会回到跳转开始时的那一行。
+
+
+
 #### Advanced: Loops
 
 You absolutely can use diverts to create looped content, and **ink** has several features to exploit this, including ways to make the content vary itself, and ways to control how often options can be chosen.
@@ -306,6 +477,20 @@ You absolutely can use diverts to create looped content, and **ink** has several
 See the sections on Varying Text and [Conditional Choices](#conditional-choices) for more information.
 
 Oh, and the following is legal and not a great idea:
+
+> **高级：循环**
+>
+> 您绝对可以使用转移来创建循环内容，而 **Ink** 具有多种功能可以利用这一点，包括使内容本身变化的方法，以及控制选择选项的频率的方法。
+>
+> （这里指的就是，在一个节点中，对着自己进行跳转，于是这就构成了一个闭环）
+>
+> 有关详细信息，请参阅变化文本和[条件选择](#conditional-choices)部分。
+>
+> 哦，以下是合法的，不是一个好主意：
+>
+> （其实节点的循环是比较常用的，你可以不用听他
+>
+> （￣︶￣）↗　）
 
 	=== round ===
 	and
@@ -318,6 +503,14 @@ Oh, and the following is legal and not a great idea:
 As stories get longer, they become more confusing to keep organised without some additional structure.
 
 Knots can include sub-sections called "stitches". These are marked using a single equals sign.
+
+> **包含和缝合**
+>
+> **结可以细分**
+>
+> 随着故事变得越来越长，它们变得更加混乱，以便在没有额外结构的情况下保持井井有条。
+>
+> 结可以包括称为“针脚”的子部分。（我个人喜欢叫它 “子节点” ）这些使用“单个等号”进行标记。
 
 	=== the_orient_express ===
 	= in_first_class
@@ -335,6 +528,22 @@ One could use a knot for a scene, for instance, and stitches for the events with
 
 A stitch can be diverted to using its "address".
 
+> **缝线有唯一的名称**
+>
+> 缝线可以转移到使用其“地址”上。
+>
+> （这里的意思是，如果你想跳转到一个节点的子节点内，你必须得先让系统找到这个子节点所属的父节点，而后系统才会在这个父节点内寻找那个子节点。可以用点来描述父节点和子节点的关系。
+>
+> 这里举个栗子：
+>
+> ```
+> == a ==
+> = a1 
+> = a2
+> ```
+>
+> 假如你要跳转到a2，那么需要这样写跳转  -> a.a2
+
 	*	[Travel in third class]
 		-> the_orient_express.in_third_class
 	
@@ -345,19 +554,35 @@ A stitch can be diverted to using its "address".
 
 Diverting to a knot which contains stitches will divert to the first stitch in the knot. So:
 
+> **第一针是默认的**
+>
+> 转移到包含针脚的结上将转移到结中的第一针。所以：
+
 	*	[Travel in first class]
 		"First class, Monsieur. Where else?"
 		-> the_orient_express
 
 is the same as:
 
+
+
 	*	[Travel in first class]
 		"First class, Monsieur. Where else?"
 		-> the_orient_express.in_first_class
 
+> （如果父节点the_orient_express与第一个子节点in_first_class之间没有任何东西，那么以上两个例子当然是等效的，因为-> the_orient_express将默认跳转到the_orient_express下的第一个子节点in_first_class，
+>
+> 而如果the_orient_express与第一个子节点in_first_class之间有东西，那么系统当然会跳转到the_orient_express与in_first_class之间内容的第一行）
+
+
+
 (...unless we move the order of the stitches around inside the knot!)
 
 You can also include content at the top of a knot outside of any stitch. However, you need to remember to divert out of it - the engine *won't* automatically enter the first stitch once it's worked its way through the header content.
+
+> 您还可以在任何针脚之外的结的顶部包含内容。但是，您需要记住要转移它 - 一旦引擎通过标题内容工作，它就不会自动进入第一针。
+>
+> （如果你处在父节点与子节点之间的内容时，你可以直接用箭头跳转到该父节点下的任意子节点，而不用描述这个父节点，因为系统会在你所在父节点下的所有子节点中寻找名字匹配的子节点而后跳转。）
 
 	=== the_orient_express ===
 	
@@ -370,10 +595,27 @@ You can also include content at the top of a knot outside of any stitch. However
 	= in_second_class
 		...
 
+> 在这个例子中，如果你处于the_orient_express外，而你又想跳转到它的in_first_class子节点，那么你需要先写出这个父节点，再在后面加上这个子节点：  
+>
+> ->the_orient_express.in_first_class
+>
+> 但是这个例子中你处于父节点the_orient_express和其第一个子节点之间，那么你就不必浪费口舌了，你可以直接：
+>
+> -> in_first_class
+
+
+
+
 
 ### Local diverts
 
 From inside a knot, you don't need to use the full address for a stitch.
+
+> **本地分流**
+>
+> 从结的内部，您不需要使用完整的地址进行缝合。
+>
+> （你看，这就是我在上文中提到的）
 
 	-> the_orient_express
 	
@@ -409,6 +651,12 @@ There are no rules about what file a knot must be in to be diverted to. (In othe
 
 By default, every choice in the game can only be chosen once. If you don't have loops in your story, you'll never notice this behaviour. But if you do use loops, you'll quickly notice your options disappearing...
 
+> **选择只能使用一次**
+>
+> 默认情况下，游戏中的每个选项只能选择一次。如果你的故事中没有循环，你永远不会注意到这种行为。但是，如果您确实使用循环，您很快就会注意到您的选项消失了......
+>
+> （因为这个原因，所以我才会在文档开篇提到不推荐使用*这种一次性选项，反之我们可以用+这种能够无限使用的选项。）
+
 	=== find_help ===
 	
 		You search desperately for a friendly face in the crowd.
@@ -436,6 +684,10 @@ produces:
 
 The above example stops where it does, because the next choice ends up in an "out of content" run-time error.
 
+> **回退选项**
+>
+> 上面的示例在实际操作时停止，因为下一个选择最终会导致“内容不足”运行时错误。
+
 	> 1
 	The man with the briefcase looks disgusted as you stumble past him.
 	You search desperately for a friendly face in the crowd.
@@ -446,9 +698,17 @@ We can resolve this with a 'fallback choice'. Fallback choices are never display
 
 A fallback choice is simply a "choice without choice text":
 
+> 我们可以通过“回退选择”来解决此问题。后备选项永远不会显示给玩家，但如果没有其他选项存在，则由游戏“选择”。
+>
+> 回退选项只是“没有选项文本的选项
+>
+> （就是说，当这里的所有选项都用完之后，玩家将没有选项可以选，游戏就会报错，因此你可以使用这个符号  *->   （这里的箭头后不能加任何东西）如此一来，当选项都被选完后，系统会自动进入这个回退选项）
+
 	*	-> out_of_options
 
 And, in a slight abuse of syntax, we can make a default choice with content in it, using an "choice then arrow":
+
+
 
 	* 	->
 		Mulder never could explain how he got out of that burning box car. -> season_2
@@ -778,3 +1038,4 @@ The number you pass to the seed function is arbitrary, but providing different s
 #### Advanced: more queries
 
 You can make your own external functions, though the syntax is a bit different: see the section on [functions](#5-functions) below.
+
