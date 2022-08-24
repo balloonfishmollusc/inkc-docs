@@ -54,7 +54,7 @@ The simplest mark-up is a comment. **ink** supports two kinds of comment. There'
 	... or an unlimited block of text
 */
 
-当游戏运行时，注释消杀，它将显示为这个：
+当游戏运行时，注释消失，它将显示为这个：
 "What do you make of this?" she asked.
 
 
@@ -79,7 +79,7 @@ Text content from the game will appear 'as is' when the engine runs. However, it
 
 **ink** provides a simple system for tagging lines of content, with hashtags.
 
-	意思就是，你在写代码的时候，编译器会将一些字标成不同颜色便于阅读，当然，游戏运行的时候是不会将这些子的颜色改变的
+	意思就是，你在写代码的时候，编译器会将一些字标成不同颜色便于阅读，当然，游戏运行的时候是不会将这些字的颜色改变的
 	A line of normal game-text. # colour it blue
 
 These don't show up in the main text flow, but can be read off by the game and used as you see fit. See [Running Your Ink](RunningYourInk.md#marking-up-your-ink-content-with-tags) for more information.
